@@ -121,6 +121,16 @@ uptime.
   on the Log a game form -- leave them blank if you don't care to track
   them. When set, turn order shows next to each player in the recent-games
   ledger and match length shows under the date.
+- Clicking any player's name on the dashboard opens `player.html?id=<id>` --
+  their full record, deck-by-deck breakdown (including retired decks), and
+  complete game history from their perspective (Won/Lost, not just who won
+  overall). This is a plain query-string route on a static HTML file, so it
+  needs no server config beyond what GitHub Pages already does.
+- The blurred art behind the page header (`js/hero.js`) uses the current
+  win leader's most-played commander on the dashboard, and that player's
+  own most-played commander on their player page. Win totals count up from
+  zero on load (`js/animate.js`) instead of appearing instantly, and player
+  and deck cards lift slightly on hover.
 
 ## Possible next additions
 

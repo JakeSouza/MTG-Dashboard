@@ -1,28 +1,11 @@
-import { db, authReady, collection, getDocs, query, orderBy } from "./firebase-init.js";
+import { loadDecksAndGames, fmtDate, ordinal } from "./data.js";
 import { PLAYERS } from "./players.js";
 import { colorPairFor, pipsHtml } from "./colors.js";
 import { fetchCommanderArt } from "./scryfall.js";
+import { animateCount } from "./animate.js";
+import { setHeroArt } from "./hero.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
-
-function fmtDate(d) {
-  if (!d) return "";
-  const date = d.toDate ? d.toDate() : new Date(d);
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
-async function loadData() {
-  await authReady;
-
-  const decksSnap = await getDocs(query(collection(db, "decks"), orderBy("createdAt", "desc")));
-  const decks = decksSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  const deckById = Object.fromEntries(decks.map((d) => [d.id, d]));
-
-  const gamesSnap = await getDocs(query(collection(db, "games"), orderBy("date", "desc")));
-  const games = gamesSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-
-  return { decks, deckById, games };
-}
 
 function computeStandings(games) {
   const stats = {};
@@ -65,18 +48,17 @@ function renderStandings(stats, deckById) {
     const topDeck = mostPlayedDeck(s, deckById);
     const pair = colorPairFor(topDeck ? topDeck.colorIdentity : null);
     return `
-      <div class="player" style="--c:${pair.background}">
+      <a class="player" href="player.html?id=${p.id}" style="--c:${pair.background}">
         <div class="name">${p.name}</div>
         <div class="deck">${topDeck ? topDeck.commander || topDeck.name : "No decks logged yet"}</div>
-        <div class="wins">${s.wins}</div>
+        <div class="wins" id="wins-${p.id}">0</div>
         <div class="record">${s.wins}W &mdash; ${s.games} games &middot; ${winPct}%</div>
-      </div>`;
+      </a>`;
   }).join("");
-}
 
-function ordinal(n) {
-  const suffixes = { 1: "1st", 2: "2nd", 3: "3rd", 4: "4th" };
-  return suffixes[n] || `${n}th`;
+  PLAYERS.forEach((p, i) => {
+    animateCount(document.getElementById(`wins-${p.id}`), stats[p.id].wins, { delay: i * 90 });
+  });
 }
 
 function renderLedger(games, deckById) {
@@ -154,12 +136,22 @@ function renderDeckLibrary(decks, stats) {
   fillMissingArt();
 }
 
+async function setLeaderHeroArt(stats, deckById) {
+  const leaderId = PLAYERS.reduce((best, p) => (stats[p.id].wins > stats[best].wins ? p.id : best), PLAYERS[0].id);
+  if (stats[leaderId].wins === 0) return;
+  const leaderDeck = mostPlayedDeck(stats[leaderId], deckById);
+  if (!leaderDeck) return;
+  const art = leaderDeck.artUrls?.[0] || (await fetchCommanderArt(leaderDeck.commander))[0];
+  if (art) setHeroArt(art);
+}
+
 async function init() {
-  const { decks, deckById, games } = await loadData();
+  const { decks, deckById, games } = await loadDecksAndGames();
   const stats = computeStandings(games);
   renderStandings(stats, deckById);
   renderLedger(games, deckById);
   renderDeckLibrary(decks, stats);
+  setLeaderHeroArt(stats, deckById);
 
   if (games[0]) {
     const winner = playerById[games[0].winnerPlayerId];

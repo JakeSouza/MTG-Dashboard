@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player &middot; Rob Roy's Boys</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="hero-bg"></div>
+
+<div class="top">
+  <div>
+    <h1 id="player-name">Player</h1>
+    <div class="tagline" id="player-tagline">Loading&hellip;</div>
+  </div>
+  <nav>
+    <a href="index.html">Standings</a>
+    <a href="log-game.html">Log a game</a>
+    <a href="decks.html">Decks</a>
+  </nav>
+</div>
+
+<div class="standings" id="player-hero" style="grid-template-columns:1fr;max-width:320px;"></div>
+
+<div class="layout">
+  <div>
+    <h2>Game history</h2>
+    <div id="player-ledger" class="ledger"></div>
+  </div>
+  <div>
+    <h2>Decks</h2>
+    <div id="player-decks" class="decks"></div>
+  </div>
+</div>
+
+<script type="module" src="js/player.js"></script>
+</body>
+</html>
