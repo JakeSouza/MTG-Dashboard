@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decks &middot; Rob Roy's Boys</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <h1>Rob Roy's Boys</h1>
+    <div class="tagline">Deck library</div>
+  </div>
+  <nav>
+    <a href="index.html">Standings</a>
+    <a href="log-game.html">Log a game</a>
+    <a href="decks.html" class="active">Decks</a>
+  </nav>
+</div>
+
+<div class="layout">
+  <div>
+    <h2>Add a deck</h2>
+    <form id="deck-form">
+      <div class="field">
+        <label>Owner</label>
+        <select id="owner-select" name="owner" required></select>
+      </div>
+
+      <div class="field">
+        <label>Moxfield or Archidekt link</label>
+        <input type="url" id="link" name="link" placeholder="https://moxfield.com/decks/...">
+        <div class="hint">
+          <button type="button" id="fetch-btn" class="secondary" style="margin-top:8px;padding:6px 14px;font-size:13px;">Fetch commander &amp; colors</button>
+        </div>
+        <div id="fetch-status" class="status"></div>
+      </div>
+
+      <div class="field">
+        <label>Commander</label>
+        <input type="text" id="commander" name="commander" placeholder="e.g. Atraxa, Grand Unifier" required>
+      </div>
+
+      <div class="field">
+        <label>Deck nickname (optional)</label>
+        <input type="text" id="deck-name" name="deck-name" placeholder="Defaults to the commander's name">
+      </div>
+
+      <div class="field">
+        <label>Color identity</label>
+        <div style="display:flex;gap:16px;font-size:14px;">
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="color-W"> White</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="color-U"> Blue</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="color-B"> Black</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="color-R"> Red</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="color-G"> Green</label>
+        </div>
+      </div>
+
+      <button type="submit">Add deck</button>
+      <div id="save-status" class="status"></div>
+    </form>
+  </div>
+
+  <div>
+    <h2>Current decks</h2>
+    <div id="deck-list" class="decks"></div>
+  </div>
+</div>
+
+<script type="module" src="js/decks.js"></script>
+</body>
+</html>

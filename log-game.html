@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log a game &middot; Rob Roy's Boys</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <h1>Rob Roy's Boys</h1>
+    <div class="tagline">Log a game</div>
+  </div>
+  <nav>
+    <a href="index.html">Standings</a>
+    <a href="log-game.html" class="active">Log a game</a>
+    <a href="decks.html">Decks</a>
+  </nav>
+</div>
+
+<form id="game-form">
+  <div class="field">
+    <label>Date</label>
+    <input type="date" id="date" name="date" required>
+  </div>
+
+  <div id="pod-grid" class="pod-grid">
+    <p class="hint">Loading decks&hellip;</p>
+  </div>
+
+  <div class="field">
+    <label>Winner</label>
+    <select id="winner-select" name="winner" required></select>
+  </div>
+
+  <div class="field">
+    <label>Notes (optional)</label>
+    <textarea name="notes" rows="3" placeholder="e.g. won on turn 8 with a combo"></textarea>
+  </div>
+
+  <button type="submit">Save game</button>
+  <div id="status" class="status"></div>
+</form>
+
+<script type="module" src="js/log-game.js"></script>
+</body>
+</html>

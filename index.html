@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rob Roy's Boys</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <h1>Rob Roy's Boys</h1>
+    <div class="tagline">Commander pod &middot; est. tracking from game one</div>
+  </div>
+  <div>
+    <nav>
+      <a href="index.html" class="active">Standings</a>
+      <a href="log-game.html">Log a game</a>
+      <a href="decks.html">Decks</a>
+    </nav>
+    <div id="last-game" class="hint" style="text-align:right;margin-top:10px;"></div>
+  </div>
+</div>
+
+<div id="standings" class="standings">
+  <p class="hint">Loading&hellip;</p>
+</div>
+
+<div class="layout">
+  <div>
+    <h2>Recent games</h2>
+    <div id="ledger" class="ledger"></div>
+  </div>
+  <div>
+    <h2>Deck library</h2>
+    <div id="deck-library" class="decks"></div>
+  </div>
+</div>
+
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
