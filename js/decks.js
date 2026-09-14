@@ -46,7 +46,7 @@ async function renderDeckList() {
     const pair = colorPairFor(d.colorIdentity);
     const retiredTag = d.active === false ? `<span class="bracket-badge">Retired</span>` : "";
     return `
-      <div class="deckcard" style="--c:${pair.background};--ci:var(${pair.ink})">
+      <div class="deckcard" style="--c:${pair.background}">
         ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>

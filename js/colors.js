@@ -24,20 +24,21 @@ const TONAL_HEX = {
   G: ["#63a068", "#2a5730"],
 };
 const GOLD_TONAL = ["#ddc98a", "#9c7a2c"];
-const COLOR_INK = { W: "--w-ink", U: "--u-ink", B: "--b-ink", R: "--r-ink", G: "--g-ink" };
-const GOLD_PAIR = { background: `linear-gradient(135deg, ${GOLD_TONAL[0]}, ${GOLD_TONAL[1]})`, ink: "--gold-ink" };
 
+// Text sits on a dark scrim layered over these gradients (see .player/.deckcard
+// in style.css), so a single light text color works regardless of hue --
+// no need to pick a different ink color per color family anymore.
 export function colorPairFor(colorIdentity) {
   const present = ["W", "U", "B", "R", "G"].filter((c) => colorIdentity && colorIdentity.includes(c));
-  if (present.length === 0) return GOLD_PAIR;
+  if (present.length === 0) return { background: `linear-gradient(135deg, ${GOLD_TONAL[0]}, ${GOLD_TONAL[1]})` };
 
   if (present.length === 1) {
     const [light, dark] = TONAL_HEX[present[0]];
-    return { background: `linear-gradient(135deg, ${light}, ${dark})`, ink: COLOR_INK[present[0]] };
+    return { background: `linear-gradient(135deg, ${light}, ${dark})` };
   }
 
   const stops = present.map((c) => BASE_HEX[c]);
-  return { background: `linear-gradient(135deg, ${stops.join(", ")})`, ink: COLOR_INK[present[0]] };
+  return { background: `linear-gradient(135deg, ${stops.join(", ")})` };
 }
 
 export function pipsHtml(colorIdentity) {

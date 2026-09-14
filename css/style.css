@@ -8,13 +8,9 @@
   --text:#17161c;
   --text-muted:#726f66;
   --gold:#cdb26a;
-  --gold-ink:#3a2f08;
-  --w:#e8d9a0;--w-ink:#4a3d10;
-  --u:#2f6fb3;--u-ink:#eaf2fb;
-  --b:#2b2b33;--b-ink:#e8e7ec;
-  --r:#c4432b;--r-ink:#fdf0ec;
-  --g:#3f7d45;--g-ink:#eef7ef;
+  --w:#e8d9a0;--u:#2f6fb3;--b:#2b2b33;--r:#c4432b;--g:#3f7d45;
   --danger:#c4432b;
+  --scrim:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45));
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
@@ -62,21 +58,21 @@ nav a.active{color:var(--text);font-weight:600;border-bottom:2px solid var(--tex
   margin-bottom:52px;
 }
 .player{
-  --c:linear-gradient(135deg,#ddc98a,#9c7a2c);--ci:var(--gold-ink);
-  background:var(--c);
-  color:var(--ci);
+  --c:linear-gradient(135deg,#ddc98a,#9c7a2c);
+  background:var(--scrim), var(--c);
+  color:var(--bg);
   border-radius:10px;
   padding:24px 22px;
 }
 .player .name{font-family:'Archivo',sans-serif;font-size:19px;font-weight:800;}
-.player .deck{font-size:12.5px;margin-top:2px;opacity:0.75;}
+.player .deck{font-size:12.5px;margin-top:2px;opacity:0.85;}
 .player .wins{
   font-family:'Archivo',sans-serif;
   font-size:42px;font-weight:800;
   font-variant-numeric:tabular-nums;
   margin-top:16px;line-height:1;
 }
-.player .record{font-size:12.5px;margin-top:4px;opacity:0.8;}
+.player .record{font-size:12.5px;margin-top:4px;opacity:0.85;}
 
 .layout{
   display:grid;
@@ -102,13 +98,14 @@ nav a.active{color:var(--text);font-weight:600;border-bottom:2px solid var(--tex
   font-size:12.5px;padding:3px 10px;border-radius:4px;
   background:var(--panel-alt);color:var(--text-muted);
 }
-.pod-chip.winner{background:var(--wc,var(--gold));color:var(--wci,var(--gold-ink));font-weight:600;}
+.pod-chip.winner{background:var(--scrim), var(--wc,var(--gold));color:var(--bg);font-weight:600;}
 .row .winner-tag{font-size:12.5px;color:var(--text);font-weight:600;white-space:nowrap;}
 
 .decks{display:flex;flex-direction:column;gap:10px;}
 .deckcard{
-  --c:linear-gradient(135deg,#ddc98a,#9c7a2c);--ci:var(--gold-ink);
-  background:var(--c);color:var(--ci);
+  --c:linear-gradient(135deg,#ddc98a,#9c7a2c);
+  background:var(--scrim), var(--c);
+  color:var(--bg);
   border-radius:8px;
   padding:14px 16px;display:flex;align-items:center;gap:14px;
 }
@@ -116,15 +113,15 @@ nav a.active{color:var(--text);font-weight:600;border-bottom:2px solid var(--tex
 .deck-art-group{display:flex;gap:4px;flex-shrink:0;}
 .deck-art{width:52px;height:52px;object-fit:cover;border-radius:6px;background:rgba(0,0,0,0.1);display:block;}
 .deckcard .info .commander{font-family:'Archivo',sans-serif;font-size:15.5px;font-weight:800;}
-.deckcard .info .owner{font-size:12px;margin-top:2px;opacity:0.75;}
+.deckcard .info .owner{font-size:12px;margin-top:2px;opacity:0.85;}
 .pips{display:flex;gap:3px;margin-top:8px;}
 .mana-pip{width:15px;height:15px;display:block;}
 .bracket-badge{
-  display:inline-block;font-size:11px;color:var(--text);
-  background:rgba(0,0,0,0.08);border-radius:4px;
+  display:inline-block;font-size:11px;color:var(--bg);
+  background:rgba(255,255,255,0.18);border-radius:4px;
   padding:1px 9px;margin-left:8px;white-space:nowrap;
 }
-.deckcard .stat{text-align:right;font-size:13px;white-space:nowrap;opacity:0.8;}
+.deckcard .stat{text-align:right;font-size:13px;white-space:nowrap;opacity:0.85;}
 .deckcard .stat b{display:block;font-size:18px;font-weight:800;font-family:'Archivo',sans-serif;font-variant-numeric:tabular-nums;opacity:1;}
 
 form{background:var(--panel);border:1px solid var(--hairline);border-radius:10px;padding:28px 32px;max-width:560px;}
