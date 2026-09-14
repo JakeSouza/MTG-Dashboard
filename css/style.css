@@ -62,7 +62,7 @@ nav a.active{color:var(--text);font-weight:600;border-bottom:2px solid var(--tex
   margin-bottom:52px;
 }
 .player{
-  --c:var(--gold);--ci:var(--gold-ink);
+  --c:linear-gradient(135deg,#ddc98a,#9c7a2c);--ci:var(--gold-ink);
   background:var(--c);
   color:var(--ci);
   border-radius:10px;
@@ -107,7 +107,7 @@ nav a.active{color:var(--text);font-weight:600;border-bottom:2px solid var(--tex
 
 .decks{display:flex;flex-direction:column;gap:10px;}
 .deckcard{
-  --c:var(--gold);--ci:var(--gold-ink);
+  --c:linear-gradient(135deg,#ddc98a,#9c7a2c);--ci:var(--gold-ink);
   background:var(--c);color:var(--ci);
   border-radius:8px;
   padding:14px 16px;display:flex;align-items:center;gap:14px;
