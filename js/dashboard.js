@@ -1,6 +1,6 @@
 import { db, authReady, collection, getDocs, query, orderBy } from "./firebase-init.js";
 import { PLAYERS } from "./players.js";
-import { accentVarFor, pipsHtml } from "./colors.js";
+import { colorPairFor, pipsHtml } from "./colors.js";
 import { fetchCommanderArt } from "./scryfall.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
@@ -63,9 +63,9 @@ function renderStandings(stats, deckById) {
     const s = stats[p.id];
     const winPct = s.games ? Math.round((s.wins / s.games) * 100) : 0;
     const topDeck = mostPlayedDeck(s, deckById);
-    const accentVar = topDeck ? accentVarFor(topDeck.colorIdentity) : "--gold";
+    const pair = colorPairFor(topDeck ? topDeck.colorIdentity : null);
     return `
-      <div class="player" style="--accent:var(${accentVar})">
+      <div class="player" style="--c:var(${pair.bg});--ci:var(${pair.ink})">
         <div class="name">${p.name}</div>
         <div class="deck">${topDeck ? topDeck.commander || topDeck.name : "No decks logged yet"}</div>
         <div class="wins">${s.wins}</div>
@@ -83,7 +83,7 @@ function renderLedger(games, deckById) {
   el.innerHTML = games.slice(0, 15).map((g) => {
     const winnerName = playerById[g.winnerPlayerId]?.name || "Unknown";
     const winnerEntry = g.entries.find((e) => e.playerId === g.winnerPlayerId);
-    const winnerAccent = winnerEntry ? accentVarFor(deckById[winnerEntry.deckId]?.colorIdentity) : "--gold";
+    const winnerPair = winnerEntry ? colorPairFor(deckById[winnerEntry.deckId]?.colorIdentity) : null;
     const chips = (g.entries || []).map((e) => {
       const p = playerById[e.playerId];
       const deck = deckById[e.deckId];
@@ -91,7 +91,7 @@ function renderLedger(games, deckById) {
       return `<span class="pod-chip ${isWinner ? "winner" : ""}">${p ? p.name : "?"} &middot; ${deck ? (deck.commander || deck.name) : "?"}</span>`;
     }).join("");
     return `
-      <div class="row" style="--win-color:var(${winnerAccent})">
+      <div class="row" style="${winnerPair ? `--wc:var(${winnerPair.bg});--wci:var(${winnerPair.ink})` : ""}">
         <div class="date">${fmtDate(g.date)}</div>
         <div class="pods">${chips}</div>
         <div class="winner-tag">${winnerName} wins</div>
@@ -133,8 +133,9 @@ function renderDeckLibrary(decks, stats) {
       gamesPlayed = s.deckWins[d.id].games;
     }
     const pct = gamesPlayed ? Math.round((wins / gamesPlayed) * 100) : 0;
+    const pair = colorPairFor(d.colorIdentity);
     return `
-      <div class="deckcard" style="border-left:3px solid var(${accentVarFor(d.colorIdentity)})">
+      <div class="deckcard" style="--c:var(${pair.bg});--ci:var(${pair.ink})">
         ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>

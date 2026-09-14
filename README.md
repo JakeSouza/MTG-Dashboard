@@ -2,7 +2,9 @@
 
 A Commander/EDH tracker for a fixed 4-player pod: log games, track decks, and
 see all-time wins per player, per deck, and per player+deck combo. Static
-site (GitHub Pages) backed by Firebase (Firestore).
+site (GitHub Pages) backed by Firebase (Firestore). Visual theme is "Full
+Art" -- bold solid color-block panels keyed to each deck's color identity,
+Archivo for headlines and numbers, Inter for body text.
 
 ## 1. Set your players
 

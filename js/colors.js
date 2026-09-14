@@ -1,5 +1,3 @@
-export const COLOR_VAR = { W: "--w", U: "--u", B: "--b", R: "--r", G: "--g" };
-
 // Scryfall hosts these SVGs specifically for third-party embedding (the same
 // symbols used across the deckbuilding ecosystem), so no need to redraw them.
 const SYMBOL_URL = {
@@ -11,15 +9,27 @@ const SYMBOL_URL = {
 };
 const COLORLESS_SYMBOL_URL = "https://svgs.scryfall.io/card-symbols/C.svg";
 
-// Picks one accent color for a deck's left-border glow. Multicolor decks use
-// their first color (order W,U,B,R,G) -- good enough for a visual accent,
-// not meant to be a precise guild-color system.
-export function accentVarFor(colorIdentity) {
-  if (!colorIdentity || colorIdentity.length === 0) return "--gold";
+// Full Art theme: each color identity gets a solid background + matching
+// ink (text) pair, mirroring the color-block panels of modern full-art
+// card treatments. Multicolor decks use their first color found in
+// W,U,B,R,G order -- good enough for a visual accent, not meant to be a
+// precise guild-color system. Colorless/no-deck falls back to the gold
+// "artifact" pair.
+const COLOR_PAIR = {
+  W: { bg: "--w", ink: "--w-ink" },
+  U: { bg: "--u", ink: "--u-ink" },
+  B: { bg: "--b", ink: "--b-ink" },
+  R: { bg: "--r", ink: "--r-ink" },
+  G: { bg: "--g", ink: "--g-ink" },
+};
+const GOLD_PAIR = { bg: "--gold", ink: "--gold-ink" };
+
+export function colorPairFor(colorIdentity) {
+  if (!colorIdentity || colorIdentity.length === 0) return GOLD_PAIR;
   for (const c of ["W", "U", "B", "R", "G"]) {
-    if (colorIdentity.includes(c)) return COLOR_VAR[c];
+    if (colorIdentity.includes(c)) return COLOR_PAIR[c];
   }
-  return "--gold";
+  return GOLD_PAIR;
 }
 
 export function pipsHtml(colorIdentity) {

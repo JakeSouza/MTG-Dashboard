@@ -2,7 +2,7 @@ import { db, authReady, collection, getDocs, addDoc, query, orderBy, serverTimes
 import { PLAYERS } from "./players.js";
 import { fetchDeckMetadata } from "./moxfield.js";
 import { fetchCommanderArt } from "./scryfall.js";
-import { accentVarFor, pipsHtml } from "./colors.js";
+import { colorPairFor, pipsHtml } from "./colors.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
 let fetchedMeta = null;
@@ -41,12 +41,13 @@ async function renderDeckList() {
   }
   el.innerHTML = decks.map((d) => {
     const owner = playerById[d.ownerId];
+    const pair = colorPairFor(d.colorIdentity);
     return `
-      <div class="deckcard" style="border-left:3px solid var(${accentVarFor(d.colorIdentity)})">
+      <div class="deckcard" style="--c:var(${pair.bg});--ci:var(${pair.ink})">
         ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>
-          <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}</div>
+          <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}${d.bracket ? `<span class="bracket-badge">Bracket ${d.bracket}</span>` : ""}</div>
           <div class="pips">${pipsHtml(d.colorIdentity)}</div>
         </div>
       </div>`;
@@ -92,6 +93,7 @@ async function handleSubmit(e) {
     name: form["deck-name"].value.trim() || form.commander.value.trim(),
     commander: form.commander.value.trim(),
     colorIdentity,
+    bracket: form.bracket.value || null,
     link: form.link.value.trim(),
     active: true,
     createdAt: serverTimestamp(),
