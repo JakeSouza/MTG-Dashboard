@@ -41,7 +41,7 @@ a:hover{opacity:0.7;}
 .top{
   display:flex;
   justify-content:space-between;
-  align-items:baseline;
+  align-items:center;
   border-bottom:1px solid var(--hairline);
   padding-bottom:28px;
   margin-bottom:40px;
@@ -50,6 +50,24 @@ a:hover{opacity:0.7;}
   position:relative;
   z-index:1;
 }
+.emblem{position:relative;flex-shrink:0;width:56px;height:56px;}
+.emblem-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(var(--gold) 0deg 72deg, var(--u) 72deg 144deg, var(--b) 144deg 216deg, var(--r) 216deg 288deg, var(--g) 288deg 360deg);
+  box-shadow:0 4px 10px rgba(0,0,0,0.28);
+}
+.emblem-center{
+  position:absolute;inset:8px;border-radius:50%;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Archivo',sans-serif;font-weight:800;
+  font-size:14px;letter-spacing:-0.5px;color:var(--text);
+}
+.emblem-lg{width:96px;height:96px;}
+.emblem-lg .emblem-center{inset:14px;font-size:24px;}
+
+.brand{display:flex;align-items:center;gap:16px;}
+
 h1{
   font-family:'Archivo',sans-serif;
   font-weight:800;
@@ -59,6 +77,8 @@ h1{
 .wordmark{
   display:inline-block;
   font-size:38px;
+  letter-spacing:-1px;
+  filter:drop-shadow(0 3px 0 rgba(0,0,0,0.12)) drop-shadow(0 10px 18px rgba(0,0,0,0.15));
 }
 @supports (background-clip:text) or (-webkit-background-clip:text){
   .wordmark{
@@ -77,6 +97,22 @@ h1{
   background:linear-gradient(90deg, var(--gold), var(--u), var(--b), var(--r), var(--g));
   border-radius:2px;
 }
+.wordmark-hero{font-size:68px;letter-spacing:-2px;}
+.wordmark-hero::after{width:120px;height:6px;margin-top:14px;}
+
+.site-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:36px;
+  position:relative;z-index:1;
+}
+.hero-brand{
+  display:flex;align-items:center;gap:24px;
+  border-bottom:1px solid var(--hairline);
+  padding-bottom:36px;
+  margin-bottom:44px;
+  position:relative;z-index:1;
+}
+.hero-brand .tagline{font-size:16px;margin-top:10px;}
 h2{
   font-family:'Archivo',sans-serif;
   font-weight:800;
