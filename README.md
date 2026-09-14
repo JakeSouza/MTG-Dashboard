@@ -56,12 +56,39 @@ site itself can write games and decks.
 
 Go to the **Decks** page, paste a Moxfield or Archidekt link, and hit
 "Fetch commander & colors." Both APIs block direct browser requests (no CORS
-headers), so `js/moxfield.js` routes the fetch through a public CORS proxy
-(`api.allorigins.win`) instead. That's a dependency on a third-party service
-staying up -- if fetches start failing site-wide, swap the `PROXY` constant
-in `js/moxfield.js` for another CORS proxy. Either way, if a fetch fails for
-any reason, just fill in the commander name and colors by hand; the link is
-still saved and clickable.
+headers), so `js/moxfield.js` tries a chain of free CORS proxies
+(codetabs, allorigins, thingproxy) in turn. These are all donated,
+best-effort services with no uptime guarantee, so occasional failures are
+expected -- if a fetch fails for any reason, just fill in the commander name
+and colors by hand; the link is still saved and clickable.
+
+**For a genuinely reliable fix**, deploy your own tiny CORS proxy on
+Cloudflare Workers (free, takes about 2 minutes):
+
+1. Sign up at https://workers.dev and create a new Worker.
+2. Paste in this code and deploy it:
+   ```js
+   export default {
+     async fetch(request) {
+       const target = new URL(request.url).searchParams.get("url");
+       if (!target) return new Response("Missing url param", { status: 400 });
+       const res = await fetch(target, { headers: { "User-Agent": "Mozilla/5.0" } });
+       const body = await res.arrayBuffer();
+       return new Response(body, {
+         status: res.status,
+         headers: {
+           "Access-Control-Allow-Origin": "*",
+           "Content-Type": res.headers.get("Content-Type") || "application/json",
+         },
+       });
+     },
+   };
+   ```
+3. Copy the Worker's URL (looks like `https://your-worker.workers.dev`).
+4. In `js/moxfield.js`, set `WORKER_PROXY` to `"https://your-worker.workers.dev/?url="`.
+
+With that set, deck fetching no longer depends on any third-party proxy's
+uptime.
 
 ## How it works
 
@@ -79,6 +106,11 @@ still saved and clickable.
   open to browser requests) and cached as `artUrls` on the deck document
   when you add it. Decks added before this feature will fetch their art live
   on each page load instead (fine at this scale, just slightly slower).
+- Color identity is shown using Scryfall's actual WUBRG mana symbol SVGs
+  (also hosted with no CORS restriction), not plain colored dots.
+- `bracket` (1-5, per Wizards' Commander Bracket system) is optional and
+  set by hand when adding a deck -- neither Moxfield's nor Archidekt's
+  public API reliably exposes it, so there's no auto-fetch for this field.
 
 ## Possible next additions
 
