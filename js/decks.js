@@ -1,6 +1,7 @@
 import { db, authReady, collection, getDocs, addDoc, query, orderBy, serverTimestamp } from "./firebase-init.js";
 import { PLAYERS } from "./players.js";
 import { fetchDeckMetadata } from "./moxfield.js";
+import { fetchCommanderArt } from "./scryfall.js";
 import { accentVarFor, pipsHtml } from "./colors.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
@@ -9,6 +10,25 @@ let fetchedMeta = null;
 function renderOwnerOptions() {
   document.getElementById("owner-select").innerHTML =
     PLAYERS.map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
+}
+
+function artHtml(deck) {
+  if (deck.artUrls && deck.artUrls.length) {
+    return `<div class="deck-art-group">${deck.artUrls.map((u) => `<img class="deck-art" src="${u}" alt="">`).join("")}</div>`;
+  }
+  return `<div class="deck-art-group" data-commander="${deck.commander || ""}"><div class="deck-art"></div></div>`;
+}
+
+async function fillMissingArt() {
+  const groups = document.querySelectorAll(".deck-art-group[data-commander]");
+  for (const group of groups) {
+    const commander = group.dataset.commander;
+    if (!commander) continue;
+    const arts = await fetchCommanderArt(commander);
+    if (arts.length) {
+      group.innerHTML = arts.map((u) => `<img class="deck-art" src="${u}" alt="">`).join("");
+    }
+  }
 }
 
 async function renderDeckList() {
@@ -23,6 +43,7 @@ async function renderDeckList() {
     const owner = playerById[d.ownerId];
     return `
       <div class="deckcard" style="border-left:3px solid var(${accentVarFor(d.colorIdentity)})">
+        ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>
           <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}</div>
@@ -30,6 +51,7 @@ async function renderDeckList() {
         </div>
       </div>`;
   }).join("");
+  fillMissingArt();
 }
 
 async function handleFetchClick() {
@@ -80,6 +102,8 @@ async function handleSubmit(e) {
     statusEl.className = "status error";
     return;
   }
+
+  deck.artUrls = await fetchCommanderArt(deck.commander);
 
   try {
     await authReady;

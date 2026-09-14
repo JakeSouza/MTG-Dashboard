@@ -75,9 +75,13 @@ still saved and clickable.
   most-played deck's color identity (falls back to gold if colorless or no
   decks yet).
 
+- Commander art is pulled from Scryfall (no CORS proxy needed there -- it's
+  open to browser requests) and cached as `artUrls` on the deck document
+  when you add it. Decks added before this feature will fetch their art live
+  on each page load instead (fine at this scale, just slightly slower).
+
 ## Possible next additions
 
 - A "meta" page: win rate by color identity, longest streaks, head-to-head
   records between players.
 - Deck history (mark a deck retired, see how a rebuilt version compares).
-- Cached commander art pulled from Scryfall by commander name.

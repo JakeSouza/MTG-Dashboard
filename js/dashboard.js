@@ -1,6 +1,7 @@
 import { db, authReady, collection, getDocs, query, orderBy } from "./firebase-init.js";
 import { PLAYERS } from "./players.js";
 import { accentVarFor, pipsHtml } from "./colors.js";
+import { fetchCommanderArt } from "./scryfall.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
 
@@ -98,6 +99,25 @@ function renderLedger(games, deckById) {
   }).join("");
 }
 
+function artHtml(deck) {
+  if (deck.artUrls && deck.artUrls.length) {
+    return `<div class="deck-art-group">${deck.artUrls.map((u) => `<img class="deck-art" src="${u}" alt="">`).join("")}</div>`;
+  }
+  return `<div class="deck-art-group" data-commander="${deck.commander || ""}"><div class="deck-art"></div></div>`;
+}
+
+async function fillMissingArt() {
+  const groups = document.querySelectorAll(".deck-art-group[data-commander]");
+  for (const group of groups) {
+    const commander = group.dataset.commander;
+    if (!commander) continue;
+    const arts = await fetchCommanderArt(commander);
+    if (arts.length) {
+      group.innerHTML = arts.map((u) => `<img class="deck-art" src="${u}" alt="">`).join("");
+    }
+  }
+}
+
 function renderDeckLibrary(decks, stats) {
   const el = document.getElementById("deck-library");
   if (decks.length === 0) {
@@ -115,6 +135,7 @@ function renderDeckLibrary(decks, stats) {
     const pct = gamesPlayed ? Math.round((wins / gamesPlayed) * 100) : 0;
     return `
       <div class="deckcard" style="border-left:3px solid var(${accentVarFor(d.colorIdentity)})">
+        ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>
           <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}</div>
@@ -123,6 +144,7 @@ function renderDeckLibrary(decks, stats) {
         <div class="stat"><b>${pct}%</b>${wins} &ndash; ${gamesPlayed}</div>
       </div>`;
   }).join("");
+  fillMissingArt();
 }
 
 async function init() {
