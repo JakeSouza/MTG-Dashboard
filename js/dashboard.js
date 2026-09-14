@@ -41,22 +41,37 @@ function mostPlayedDeck(stats, deckById) {
 }
 
 function renderStandings(stats, deckById) {
-  const el = document.getElementById("standings");
-  el.innerHTML = PLAYERS.map((p) => {
+  const ranked = [...PLAYERS].sort((a, b) => {
+    const sa = stats[a.id], sb = stats[b.id];
+    if (sb.wins !== sa.wins) return sb.wins - sa.wins;
+    const pctA = sa.games ? sa.wins / sa.games : 0;
+    const pctB = sb.games ? sb.wins / sb.games : 0;
+    return pctB - pctA;
+  });
+
+  const cardHtml = (p, isChampion) => {
     const s = stats[p.id];
     const winPct = s.games ? Math.round((s.wins / s.games) * 100) : 0;
     const topDeck = mostPlayedDeck(s, deckById);
     const pair = colorPairFor(topDeck ? topDeck.colorIdentity : null);
     return `
-      <a class="player" href="player.html?id=${p.id}" style="--c:${pair.background}">
+      <a class="player ${isChampion ? "champion" : "runner-up"}" href="player.html?id=${p.id}" style="--c:${pair.background}">
+        ${isChampion ? `<div class="rank-tag">Current leader</div>` : ""}
         <div class="name">${p.name}</div>
         <div class="deck">${topDeck ? topDeck.commander || topDeck.name : "No decks logged yet"}</div>
         <div class="wins" id="wins-${p.id}">0</div>
         <div class="record">${s.wins}W &mdash; ${s.games} games &middot; ${winPct}%</div>
       </a>`;
-  }).join("");
+  };
 
-  PLAYERS.forEach((p, i) => {
+  const [champion, ...runnerUps] = ranked;
+  const el = document.getElementById("standings");
+  el.innerHTML = `
+    ${cardHtml(champion, true)}
+    <div class="runner-ups">${runnerUps.map((p) => cardHtml(p, false)).join("")}</div>
+  `;
+
+  ranked.forEach((p, i) => {
     animateCount(document.getElementById(`wins-${p.id}`), stats[p.id].wins, { delay: i * 90 });
   });
 }
@@ -67,7 +82,7 @@ function renderLedger(games, deckById) {
     el.innerHTML = `<p class="hint">No games logged yet. <a href="log-game.html">Log your first game</a>.</p>`;
     return;
   }
-  el.innerHTML = games.slice(0, 15).map((g) => {
+  el.innerHTML = games.slice(0, 25).map((g) => {
     const winnerName = playerById[g.winnerPlayerId]?.name || "Unknown";
     const winnerEntry = g.entries.find((e) => e.playerId === g.winnerPlayerId);
     const winnerPair = winnerEntry ? colorPairFor(deckById[winnerEntry.deckId]?.colorIdentity) : null;
@@ -106,20 +121,23 @@ async function fillMissingArt() {
   }
 }
 
-function renderDeckLibrary(decks, stats) {
-  const el = document.getElementById("deck-library");
+function renderTopDecks(decks, stats) {
+  const el = document.getElementById("deck-strip");
   if (decks.length === 0) {
     el.innerHTML = `<p class="hint">No decks yet. <a href="decks.html">Add one</a>.</p>`;
     return;
   }
-  el.innerHTML = decks.map((d) => {
-    const owner = playerById[d.ownerId];
-    let wins = 0, gamesPlayed = 0;
+
+  const withCounts = decks.map((d) => {
     const s = stats[d.ownerId];
-    if (s && s.deckWins[d.id]) {
-      wins = s.deckWins[d.id].wins;
-      gamesPlayed = s.deckWins[d.id].games;
-    }
+    const rec = (s && s.deckWins[d.id]) || { wins: 0, games: 0 };
+    return { deck: d, wins: rec.wins, games: rec.games };
+  });
+  withCounts.sort((a, b) => b.games - a.games || b.wins - a.wins);
+  const top = withCounts.slice(0, 4);
+
+  el.innerHTML = top.map(({ deck: d, wins, games: gamesPlayed }) => {
+    const owner = playerById[d.ownerId];
     const pct = gamesPlayed ? Math.round((wins / gamesPlayed) * 100) : 0;
     const pair = colorPairFor(d.colorIdentity);
     return `
@@ -150,7 +168,7 @@ async function init() {
   const stats = computeStandings(games);
   renderStandings(stats, deckById);
   renderLedger(games, deckById);
-  renderDeckLibrary(decks, stats);
+  renderTopDecks(decks, stats);
   setLeaderHeroArt(stats, deckById);
 
   if (games[0]) {

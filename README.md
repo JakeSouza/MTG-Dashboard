@@ -131,6 +131,13 @@ uptime.
   own most-played commander on their player page. Win totals count up from
   zero on load (`js/animate.js`) instead of appearing instantly, and player
   and deck cards lift slightly on hover.
+- The homepage is built around infrequent-but-intense play (a few sessions
+  a year, 10-20 games in a sitting) rather than daily check-ins: the win
+  leader gets a large "champion" card with the other three in a compact row
+  below, recent games run full-width as the main feed underneath, and the
+  deck library shrinks to a "Top decks" strip (by games played) with a link
+  to the full library on `decks.html` -- not duplicated in full on the
+  homepage.
 
 ## Possible next additions
 
