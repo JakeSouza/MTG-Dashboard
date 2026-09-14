@@ -55,10 +55,13 @@ site itself can write games and decks.
 ## 5. Add your decks
 
 Go to the **Decks** page, paste a Moxfield or Archidekt link, and hit
-"Fetch commander & colors." If it comes back empty or errors, both APIs are
-undocumented for outside use and occasionally block browser requests --
-just fill in the commander name and colors by hand; the link is still saved
-and clickable.
+"Fetch commander & colors." Both APIs block direct browser requests (no CORS
+headers), so `js/moxfield.js` routes the fetch through a public CORS proxy
+(`api.allorigins.win`) instead. That's a dependency on a third-party service
+staying up -- if fetches start failing site-wide, swap the `PROXY` constant
+in `js/moxfield.js` for another CORS proxy. Either way, if a fetch fails for
+any reason, just fill in the commander name and colors by hand; the link is
+still saved and clickable.
 
 ## How it works
 
