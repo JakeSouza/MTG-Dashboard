@@ -124,8 +124,13 @@ nav a.active{color:var(--gold);}
 .deck-art{width:56px;height:56px;object-fit:cover;border-radius:5px;background:var(--panel-alt);display:block;}
 .deckcard .info .commander{font-family:'Fraunces',serif;font-size:15.5px;}
 .deckcard .info .owner{font-size:12px;color:var(--text-muted);margin-top:2px;}
-.pips{display:flex;gap:4px;margin-top:8px;}
-.pip{width:9px;height:9px;border-radius:50%;}
+.pips{display:flex;gap:3px;margin-top:8px;}
+.mana-pip{width:15px;height:15px;display:block;}
+.bracket-badge{
+  display:inline-block;font-size:11px;color:var(--gold);
+  border:1px solid var(--hairline);border-radius:20px;
+  padding:1px 9px;margin-left:8px;white-space:nowrap;
+}
 .deckcard .stat{text-align:right;font-size:13px;color:var(--text-muted);white-space:nowrap;}
 .deckcard .stat b{display:block;font-size:17px;color:var(--text);font-weight:600;font-variant-numeric:tabular-nums;}
 

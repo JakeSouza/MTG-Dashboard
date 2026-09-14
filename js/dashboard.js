@@ -138,7 +138,7 @@ function renderDeckLibrary(decks, stats) {
         ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>
-          <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}</div>
+          <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}${d.bracket ? `<span class="bracket-badge">Bracket ${d.bracket}</span>` : ""}</div>
           <div class="pips">${pipsHtml(d.colorIdentity)}</div>
         </div>
         <div class="stat"><b>${pct}%</b>${wins} &ndash; ${gamesPlayed}</div>
