@@ -74,6 +74,11 @@ function renderStandings(stats, deckById) {
   }).join("");
 }
 
+function ordinal(n) {
+  const suffixes = { 1: "1st", 2: "2nd", 3: "3rd", 4: "4th" };
+  return suffixes[n] || `${n}th`;
+}
+
 function renderLedger(games, deckById) {
   const el = document.getElementById("ledger");
   if (games.length === 0) {
@@ -88,11 +93,12 @@ function renderLedger(games, deckById) {
       const p = playerById[e.playerId];
       const deck = deckById[e.deckId];
       const isWinner = e.playerId === g.winnerPlayerId;
-      return `<span class="pod-chip ${isWinner ? "winner" : ""}">${p ? p.name : "?"} &middot; ${deck ? (deck.commander || deck.name) : "?"}</span>`;
+      const turnTag = e.turnOrder ? `${ordinal(e.turnOrder)} &middot; ` : "";
+      return `<span class="pod-chip ${isWinner ? "winner" : ""}">${turnTag}${p ? p.name : "?"} &middot; ${deck ? (deck.commander || deck.name) : "?"}</span>`;
     }).join("");
     return `
       <div class="row" style="${winnerPair ? `--wc:${winnerPair.background}` : ""}">
-        <div class="date">${fmtDate(g.date)}</div>
+        <div class="date">${fmtDate(g.date)}${g.matchLengthMinutes ? `<div style="opacity:0.7;">${g.matchLengthMinutes}m</div>` : ""}</div>
         <div class="pods">${chips}</div>
         <div class="winner-tag">${winnerName} wins</div>
       </div>`;

@@ -25,6 +25,14 @@ function buildPodForm() {
       <div class="field">
         <label>${p.name}'s deck</label>
         <select name="deck-${p.id}" required>${options}</select>
+        <label style="margin-top:10px;">Turn order (optional)</label>
+        <select name="turn-${p.id}">
+          <option value="">--</option>
+          <option value="1">1st</option>
+          <option value="2">2nd</option>
+          <option value="3">3rd</option>
+          <option value="4">4th</option>
+        </select>
       </div>`;
   }).join("");
 
@@ -48,10 +56,14 @@ async function handleSubmit(e) {
   const winnerPlayerId = form.winner.value;
   const notes = form.notes.value.trim();
 
-  const entries = PLAYERS.map((p) => ({
-    playerId: p.id,
-    deckId: form[`deck-${p.id}`].value,
-  }));
+  const entries = PLAYERS.map((p) => {
+    const turnValue = form[`turn-${p.id}`].value;
+    return {
+      playerId: p.id,
+      deckId: form[`deck-${p.id}`].value,
+      turnOrder: turnValue ? Number(turnValue) : null,
+    };
+  });
 
   if (entries.some((en) => !en.deckId)) {
     statusEl.textContent = "Every player needs a deck selected -- add decks on the Decks page first.";
@@ -59,12 +71,22 @@ async function handleSubmit(e) {
     return;
   }
 
+  const usedTurns = entries.map((en) => en.turnOrder).filter((t) => t !== null);
+  if (new Set(usedTurns).size !== usedTurns.length) {
+    statusEl.textContent = "Two players can't have the same turn order -- fix that or leave it blank.";
+    statusEl.className = "status error";
+    return;
+  }
+
+  const lengthMinutes = form["length-minutes"].value ? Number(form["length-minutes"].value) : null;
+
   try {
     await authReady;
     await addDoc(collection(db, "games"), {
       date,
       entries,
       winnerPlayerId,
+      matchLengthMinutes: lengthMinutes,
       notes,
       createdAt: serverTimestamp(),
     });

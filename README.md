@@ -117,6 +117,10 @@ uptime.
   it back into the form, change anything, and save. Unchecking "Active"
   retires a deck without deleting its history; retired decks stop showing up
   as an option on the Log a game page but still count toward past standings.
+- Turn order (per player) and match length (in minutes) are both optional
+  on the Log a game form -- leave them blank if you don't care to track
+  them. When set, turn order shows next to each player in the recent-games
+  ledger and match length shows under the date.
 
 ## Possible next additions
 
