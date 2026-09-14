@@ -22,7 +22,7 @@
 
 <div class="layout">
   <div>
-    <h2>Add a deck</h2>
+    <h2 id="form-title">Add a deck</h2>
     <form id="deck-form">
       <div class="field">
         <label>Owner</label>
@@ -71,7 +71,12 @@
         </select>
       </div>
 
-      <button type="submit">Add deck</button>
+      <div class="field" id="active-field" style="display:none;">
+        <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="active" name="active" checked> Active (uncheck to retire this deck)</label>
+      </div>
+
+      <button type="submit" id="submit-btn">Add deck</button>
+      <button type="button" id="cancel-edit" class="secondary" style="display:none;">Cancel edit</button>
       <div id="save-status" class="status"></div>
     </form>
   </div>

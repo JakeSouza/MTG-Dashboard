@@ -65,7 +65,7 @@ function renderStandings(stats, deckById) {
     const topDeck = mostPlayedDeck(s, deckById);
     const pair = colorPairFor(topDeck ? topDeck.colorIdentity : null);
     return `
-      <div class="player" style="--c:var(${pair.bg});--ci:var(${pair.ink})">
+      <div class="player" style="--c:${pair.background};--ci:var(${pair.ink})">
         <div class="name">${p.name}</div>
         <div class="deck">${topDeck ? topDeck.commander || topDeck.name : "No decks logged yet"}</div>
         <div class="wins">${s.wins}</div>
@@ -91,7 +91,7 @@ function renderLedger(games, deckById) {
       return `<span class="pod-chip ${isWinner ? "winner" : ""}">${p ? p.name : "?"} &middot; ${deck ? (deck.commander || deck.name) : "?"}</span>`;
     }).join("");
     return `
-      <div class="row" style="${winnerPair ? `--wc:var(${winnerPair.bg});--wci:var(${winnerPair.ink})` : ""}">
+      <div class="row" style="${winnerPair ? `--wc:${winnerPair.background};--wci:var(${winnerPair.ink})` : ""}">
         <div class="date">${fmtDate(g.date)}</div>
         <div class="pods">${chips}</div>
         <div class="winner-tag">${winnerName} wins</div>
@@ -135,7 +135,7 @@ function renderDeckLibrary(decks, stats) {
     const pct = gamesPlayed ? Math.round((wins / gamesPlayed) * 100) : 0;
     const pair = colorPairFor(d.colorIdentity);
     return `
-      <div class="deckcard" style="--c:var(${pair.bg});--ci:var(${pair.ink})">
+      <div class="deckcard" style="--c:${pair.background};--ci:var(${pair.ink})">
         ${artHtml(d)}
         <div class="info">
           <div class="commander">${d.commander || d.name}</div>

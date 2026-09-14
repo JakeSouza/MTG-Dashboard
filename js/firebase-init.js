@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   addDoc,
+  updateDoc,
   query,
   orderBy,
   serverTimestamp,
@@ -23,6 +24,7 @@ const firebaseConfig = {
   messagingSenderId: "6262725962",
   appId: "1:6262725962:web:8c085907d9425d669a35b3"
 };
+
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 const auth = getAuth(app);
@@ -44,6 +46,7 @@ export {
   doc,
   getDocs,
   addDoc,
+  updateDoc,
   query,
   orderBy,
   serverTimestamp,

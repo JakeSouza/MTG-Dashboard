@@ -113,6 +113,10 @@ uptime.
 - `bracket` (1-5, per Wizards' Commander Bracket system) is optional and
   set by hand when adding a deck -- neither Moxfield's nor Archidekt's
   public API reliably exposes it, so there's no auto-fetch for this field.
+- Decks can be edited after the fact -- hit "Edit" on any deck card to load
+  it back into the form, change anything, and save. Unchecking "Active"
+  retires a deck without deleting its history; retired decks stop showing up
+  as an option on the Log a game page but still count toward past standings.
 
 ## Possible next additions
 
