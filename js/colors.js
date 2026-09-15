@@ -12,3 +12,14 @@ export function dotColorFor(colorIdentity) {
   }
   return GOLD;
 }
+
+// Deck cards only: a thin gradient blending straight through every color in
+// the identity (mono-color decks just get their one color, no gradient
+// needed). Used for a slim top-edge strip, not a full-card fill, and for the
+// soft glow behind the deck's art thumbnail.
+export function identityGradient(colorIdentity) {
+  const present = ["W", "U", "B", "R", "G"].filter((c) => colorIdentity && colorIdentity.includes(c));
+  if (present.length === 0) return GOLD;
+  if (present.length === 1) return DOT_HEX[present[0]];
+  return `linear-gradient(90deg, ${present.map((c) => DOT_HEX[c]).join(", ")})`;
+}

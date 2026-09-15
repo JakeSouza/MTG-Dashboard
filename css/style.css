@@ -134,12 +134,19 @@ a.champion:hover, a.runner-up:hover{
   margin-bottom:48px;
 }
 .deckcard{
+  position:relative;
+  overflow:hidden;
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:8px;
   padding:14px;
   display:flex;align-items:center;gap:12px;
   transition:transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.deckcard::before{
+  content:"";
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--identity, var(--accent));
 }
 .deckcard:hover{
   transform:translateY(-3px);
@@ -148,7 +155,7 @@ a.champion:hover, a.runner-up:hover{
 }
 .deckcard .info{flex:1;min-width:0;}
 .deck-art-group{display:flex;gap:4px;flex-shrink:0;}
-.deck-art{width:48px;height:48px;object-fit:cover;border-radius:6px;background:rgba(255,255,255,0.06);display:block;}
+.deck-art{width:48px;height:48px;object-fit:cover;border-radius:6px;background:rgba(255,255,255,0.06);display:block;box-shadow:0 0 14px 1px var(--glow, transparent);}
 .deckcard .info .commander{font-family:'Archivo',sans-serif;font-size:14.5px;font-weight:700;display:flex;align-items:center;}
 .deckcard .info .owner{font-size:11.5px;color:var(--text-muted);margin-top:2px;margin-left:15px;}
 .bracket-badge{

@@ -1,6 +1,6 @@
 import { loadDecksAndGames, fmtDate, ordinal } from "./data.js";
 import { PLAYERS } from "./players.js";
-import { dotColorFor } from "./colors.js";
+import { dotColorFor, identityGradient } from "./colors.js";
 import { fetchCommanderArt } from "./scryfall.js";
 import { animateCount } from "./animate.js";
 
@@ -136,8 +136,9 @@ function renderTopDecks(decks, stats) {
     const owner = playerById[d.ownerId];
     const pct = gamesPlayed ? Math.round((wins / gamesPlayed) * 100) : 0;
     const dot = dotColorFor(d.colorIdentity);
+    const identity = identityGradient(d.colorIdentity);
     return `
-      <div class="deckcard">
+      <div class="deckcard" style="--identity:${identity};--glow:${dot}66">
         ${artHtml(d)}
         <div class="info">
           <div class="commander"><span class="dot" style="--c:${dot}"></span>${d.commander || d.name}</div>

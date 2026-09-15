@@ -106,6 +106,11 @@ uptime.
   most-played deck's color identity (falls back to gold if colorless or no
   decks yet) -- multicolor decks show their first color found in W,U,B,R,G
   order, a single representative dot rather than a blend.
+- Deck cards get a bit more color than everything else on purpose: a thin
+  3px strip along the top blends through every color in that deck's
+  identity (a real multicolor gradient for multicolor decks, not just the
+  first color), and the art thumbnail gets a soft matching glow. Everywhere
+  else -- player names, ledger rows -- stays to the single small dot.
 
 - Commander art is pulled from Scryfall (no CORS proxy needed there -- it's
   open to browser requests) and cached as `artUrls` on the deck document

@@ -2,7 +2,7 @@ import { db, authReady, collection, getDocs, addDoc, updateDoc, doc, query, orde
 import { PLAYERS } from "./players.js";
 import { fetchDeckMetadata } from "./moxfield.js";
 import { fetchCommanderArt } from "./scryfall.js";
-import { dotColorFor } from "./colors.js";
+import { dotColorFor, identityGradient } from "./colors.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
 let fetchedMeta = null;
@@ -44,9 +44,10 @@ async function renderDeckList() {
   el.innerHTML = currentDecks.map((d) => {
     const owner = playerById[d.ownerId];
     const dot = dotColorFor(d.colorIdentity);
+    const identity = identityGradient(d.colorIdentity);
     const retiredTag = d.active === false ? `<span class="bracket-badge">Retired</span>` : "";
     return `
-      <div class="deckcard">
+      <div class="deckcard" style="--identity:${identity};--glow:${dot}66">
         ${artHtml(d)}
         <div class="info">
           <div class="commander"><span class="dot" style="--c:${dot}"></span>${d.commander || d.name}</div>
