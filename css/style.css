@@ -227,7 +227,7 @@ button.secondary{background:transparent;border:1px solid var(--border);color:var
   .champion .stat{text-align:left;}
   .champion .wins{font-size:36px;}
 
-  .runner-ups{grid-template-columns:1fr 1fr;}
+  .runner-ups{grid-template-columns:1fr;}
 
   .row{
     display:grid;
