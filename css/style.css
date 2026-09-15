@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Kaushan+Script&family=Inter:wght@400;500;600;700&display=swap');
 
 :root{
   --bg:#0e0e11;
@@ -41,13 +41,27 @@ h1{
   font-size:32px;
   letter-spacing:-0.5px;
 }
+.wordmark{
+  font-family:'Kaushan Script',cursive;
+  font-weight:400;
+  font-size:46px;
+  letter-spacing:0;
+  line-height:1;
+}
 h2{
   font-family:'Archivo',sans-serif;
   font-weight:700;
   font-size:16px;
   margin-bottom:14px;
 }
-.tagline{color:var(--text-muted);font-size:14px;margin-top:4px;}
+.tagline{
+  display:flex;align-items:center;gap:10px;
+  color:var(--text-muted);font-size:11px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;margin-top:8px;
+}
+.tagline::before, .tagline::after{
+  content:"";width:18px;height:2px;background:var(--text-muted);flex-shrink:0;
+}
 
 nav{display:flex;gap:24px;font-size:14px;}
 nav a{color:var(--text-muted);text-decoration:none;}
