@@ -1,52 +1,14 @@
-// Scryfall hosts these SVGs specifically for third-party embedding (the same
-// symbols used across the deckbuilding ecosystem), so no need to redraw them.
-const SYMBOL_URL = {
-  W: "https://svgs.scryfall.io/card-symbols/W.svg",
-  U: "https://svgs.scryfall.io/card-symbols/U.svg",
-  B: "https://svgs.scryfall.io/card-symbols/B.svg",
-  R: "https://svgs.scryfall.io/card-symbols/R.svg",
-  G: "https://svgs.scryfall.io/card-symbols/G.svg",
-};
-const COLORLESS_SYMBOL_URL = "https://svgs.scryfall.io/card-symbols/C.svg";
+// Dark Minimal theme: color identity is signaled by a single small dot next
+// to a name, not a full card background or a row of mana symbols. Keeps
+// color meaningful without letting it dominate the surface.
+const DOT_HEX = { W: "#c7a648", U: "#3d7ab8", B: "#4a4750", R: "#c1503a", G: "#4b8452" };
+const GOLD = "#c9a24b";
 
-// Full Art theme: each color identity gets a gradient background + matching
-// ink (text) pair. Mono-color decks get a tonal (light-to-dark) gradient of
-// their own color; multicolor decks blend straight through each color in
-// their identity (W,U,B,R,G order) for a genuine guild-color gradient
-// rather than picking just one. These hexes mirror the --w/--u/--b/--r/--g
-// values in css/style.css -- keep them in sync if that palette changes.
-const BASE_HEX = { W: "#e8d9a0", U: "#2f6fb3", B: "#2b2b33", R: "#c4432b", G: "#3f7d45" };
-const TONAL_HEX = {
-  W: ["#f2ead0", "#cdb26a"],
-  U: ["#5b93c9", "#1d4569"],
-  B: ["#46454f", "#17171b"],
-  R: ["#d97157", "#8a2f1c"],
-  G: ["#63a068", "#2a5730"],
-};
-const GOLD_TONAL = ["#ddc98a", "#9c7a2c"];
-
-// Text sits on a dark scrim layered over these gradients (see .player/.deckcard
-// in style.css), so a single light text color works regardless of hue --
-// no need to pick a different ink color per color family anymore.
-export function colorPairFor(colorIdentity) {
-  const present = ["W", "U", "B", "R", "G"].filter((c) => colorIdentity && colorIdentity.includes(c));
-  if (present.length === 0) return { background: `linear-gradient(135deg, ${GOLD_TONAL[0]}, ${GOLD_TONAL[1]})` };
-
-  if (present.length === 1) {
-    const [light, dark] = TONAL_HEX[present[0]];
-    return { background: `linear-gradient(135deg, ${light}, ${dark})` };
+// Multicolor decks use their first color found in W,U,B,R,G order -- a
+// single representative dot, not a blend.
+export function dotColorFor(colorIdentity) {
+  for (const c of ["W", "U", "B", "R", "G"]) {
+    if (colorIdentity && colorIdentity.includes(c)) return DOT_HEX[c];
   }
-
-  const stops = present.map((c) => BASE_HEX[c]);
-  return { background: `linear-gradient(135deg, ${stops.join(", ")})` };
-}
-
-export function pipsHtml(colorIdentity) {
-  if (!colorIdentity || colorIdentity.length === 0) {
-    return `<img class="mana-pip" src="${COLORLESS_SYMBOL_URL}" alt="Colorless">`;
-  }
-  return colorIdentity
-    .filter((c) => SYMBOL_URL[c])
-    .map((c) => `<img class="mana-pip" src="${SYMBOL_URL[c]}" alt="${c}">`)
-    .join("");
+  return GOLD;
 }

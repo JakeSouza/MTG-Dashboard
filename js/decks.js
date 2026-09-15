@@ -2,7 +2,7 @@ import { db, authReady, collection, getDocs, addDoc, updateDoc, doc, query, orde
 import { PLAYERS } from "./players.js";
 import { fetchDeckMetadata } from "./moxfield.js";
 import { fetchCommanderArt } from "./scryfall.js";
-import { colorPairFor, pipsHtml } from "./colors.js";
+import { dotColorFor } from "./colors.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
 let fetchedMeta = null;
@@ -43,15 +43,14 @@ async function renderDeckList() {
   }
   el.innerHTML = currentDecks.map((d) => {
     const owner = playerById[d.ownerId];
-    const pair = colorPairFor(d.colorIdentity);
+    const dot = dotColorFor(d.colorIdentity);
     const retiredTag = d.active === false ? `<span class="bracket-badge">Retired</span>` : "";
     return `
-      <div class="deckcard" style="--c:${pair.background}">
+      <div class="deckcard">
         ${artHtml(d)}
         <div class="info">
-          <div class="commander">${d.commander || d.name}</div>
+          <div class="commander"><span class="dot" style="--c:${dot}"></span>${d.commander || d.name}</div>
           <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}${d.bracket ? `<span class="bracket-badge">Bracket ${d.bracket}</span>` : ""}${retiredTag}</div>
-          <div class="pips">${pipsHtml(d.colorIdentity)}</div>
         </div>
         <button type="button" class="secondary edit-btn" data-id="${d.id}" style="padding:6px 14px;font-size:13px;">Edit</button>
       </div>`;

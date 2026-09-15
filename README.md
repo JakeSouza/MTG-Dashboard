@@ -2,9 +2,11 @@
 
 A Commander/EDH tracker for a fixed 4-player pod: log games, track decks, and
 see all-time wins per player, per deck, and per player+deck combo. Static
-site (GitHub Pages) backed by Firebase (Firestore). Visual theme is "Full
-Art" -- bold solid color-block panels keyed to each deck's color identity,
-Archivo for headlines and numbers, Inter for body text.
+site (GitHub Pages) backed by Firebase (Firestore). Visual theme is "Dark
+Minimal" -- near-black surfaces, a single warm-gold accent, Archivo for
+headlines and numbers, Inter for body text. Color identity is shown as a
+small dot next to a name rather than a full-card background, keeping color
+meaningful without letting it dominate the page.
 
 ## 1. Set your players
 
@@ -100,16 +102,15 @@ uptime.
 - All standings (win %, per-deck records, etc.) are computed client-side
   from the raw `games` collection on page load -- there's no separate
   "stats" table to keep in sync.
-- Each player/deck's accent color on the dashboard is drawn from the
+- Each player/deck's dot color on the dashboard is drawn from the
   most-played deck's color identity (falls back to gold if colorless or no
-  decks yet).
+  decks yet) -- multicolor decks show their first color found in W,U,B,R,G
+  order, a single representative dot rather than a blend.
 
 - Commander art is pulled from Scryfall (no CORS proxy needed there -- it's
   open to browser requests) and cached as `artUrls` on the deck document
   when you add it. Decks added before this feature will fetch their art live
   on each page load instead (fine at this scale, just slightly slower).
-- Color identity is shown using Scryfall's actual WUBRG mana symbol SVGs
-  (also hosted with no CORS restriction), not plain colored dots.
 - `bracket` (1-5, per Wizards' Commander Bracket system) is optional and
   set by hand when adding a deck -- neither Moxfield's nor Archidekt's
   public API reliably exposes it, so there's no auto-fetch for this field.
@@ -126,11 +127,8 @@ uptime.
   complete game history from their perspective (Won/Lost, not just who won
   overall). This is a plain query-string route on a static HTML file, so it
   needs no server config beyond what GitHub Pages already does.
-- The blurred art behind the page header (`js/hero.js`) uses the current
-  win leader's most-played commander on the dashboard, and that player's
-  own most-played commander on their player page. Win totals count up from
-  zero on load (`js/animate.js`) instead of appearing instantly, and player
-  and deck cards lift slightly on hover.
+- Win totals count up from zero on load (`js/animate.js`) instead of
+  appearing instantly, and player and deck cards lift slightly on hover.
 - The homepage is built around infrequent-but-intense play (a few sessions
   a year, 10-20 games in a sitting) rather than daily check-ins: the win
   leader gets a large "champion" card with the other three in a compact row

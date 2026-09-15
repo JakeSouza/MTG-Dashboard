@@ -1,9 +1,8 @@
 import { loadDecksAndGames, fmtDate, ordinal } from "./data.js";
 import { PLAYERS } from "./players.js";
-import { colorPairFor, pipsHtml } from "./colors.js";
+import { dotColorFor } from "./colors.js";
 import { fetchCommanderArt } from "./scryfall.js";
 import { animateCount } from "./animate.js";
-import { setHeroArt } from "./hero.js";
 
 const playerById = Object.fromEntries(PLAYERS.map((p) => [p.id, p]));
 
@@ -53,14 +52,13 @@ function renderStandings(stats, deckById) {
     const s = stats[p.id];
     const winPct = s.games ? Math.round((s.wins / s.games) * 100) : 0;
     const topDeck = mostPlayedDeck(s, deckById);
-    const pair = colorPairFor(topDeck ? topDeck.colorIdentity : null);
+    const dot = dotColorFor(topDeck ? topDeck.colorIdentity : null);
     return `
-      <a class="player ${isChampion ? "champion" : "runner-up"}" href="player.html?id=${p.id}" style="--c:${pair.background}">
-        ${isChampion ? `<div class="rank-tag">Current leader</div>` : ""}
-        <div class="name">${p.name}</div>
+      <a class="${isChampion ? "champion" : "runner-up"}" href="player.html?id=${p.id}">
+        ${isChampion ? `<div class="label">Current leader</div>` : ""}
+        <div class="name-row"><span class="dot" style="--c:${dot}"></span><span class="name">${p.name}</span></div>
         <div class="deck">${topDeck ? topDeck.commander || topDeck.name : "No decks logged yet"}</div>
-        <div class="wins" id="wins-${p.id}">0</div>
-        <div class="record">${s.wins}W &mdash; ${s.games} games &middot; ${winPct}%</div>
+        ${isChampion ? `<div class="stat"><div class="wins" id="wins-${p.id}">0</div><div class="record">${s.wins}W &mdash; ${s.games} games &middot; ${winPct}%</div></div>` : `<div class="wins" id="wins-${p.id}">0</div><div class="record">${s.wins}W &mdash; ${s.games} games &middot; ${winPct}%</div>`}
       </a>`;
   };
 
@@ -84,8 +82,6 @@ function renderLedger(games, deckById) {
   }
   el.innerHTML = games.slice(0, 25).map((g) => {
     const winnerName = playerById[g.winnerPlayerId]?.name || "Unknown";
-    const winnerEntry = g.entries.find((e) => e.playerId === g.winnerPlayerId);
-    const winnerPair = winnerEntry ? colorPairFor(deckById[winnerEntry.deckId]?.colorIdentity) : null;
     const chips = (g.entries || []).map((e) => {
       const p = playerById[e.playerId];
       const deck = deckById[e.deckId];
@@ -94,7 +90,7 @@ function renderLedger(games, deckById) {
       return `<span class="pod-chip ${isWinner ? "winner" : ""}">${turnTag}${p ? p.name : "?"} &middot; ${deck ? (deck.commander || deck.name) : "?"}</span>`;
     }).join("");
     return `
-      <div class="row" style="${winnerPair ? `--wc:${winnerPair.background}` : ""}">
+      <div class="row">
         <div class="date">${fmtDate(g.date)}${g.matchLengthMinutes ? `<div style="opacity:0.7;">${g.matchLengthMinutes}m</div>` : ""}</div>
         <div class="pods">${chips}</div>
         <div class="winner-tag">${winnerName} wins</div>
@@ -139,28 +135,18 @@ function renderTopDecks(decks, stats) {
   el.innerHTML = top.map(({ deck: d, wins, games: gamesPlayed }) => {
     const owner = playerById[d.ownerId];
     const pct = gamesPlayed ? Math.round((wins / gamesPlayed) * 100) : 0;
-    const pair = colorPairFor(d.colorIdentity);
+    const dot = dotColorFor(d.colorIdentity);
     return `
-      <div class="deckcard" style="--c:${pair.background}">
+      <div class="deckcard">
         ${artHtml(d)}
         <div class="info">
-          <div class="commander">${d.commander || d.name}</div>
+          <div class="commander"><span class="dot" style="--c:${dot}"></span>${d.commander || d.name}</div>
           <div class="owner">${owner ? owner.name : "Unknown"}${d.link ? ` &middot; <a href="${d.link}" target="_blank" rel="noopener">list</a>` : ""}${d.bracket ? `<span class="bracket-badge">Bracket ${d.bracket}</span>` : ""}</div>
-          <div class="pips">${pipsHtml(d.colorIdentity)}</div>
         </div>
         <div class="stat"><b>${pct}%</b>${wins} &ndash; ${gamesPlayed}</div>
       </div>`;
   }).join("");
   fillMissingArt();
-}
-
-async function setLeaderHeroArt(stats, deckById) {
-  const leaderId = PLAYERS.reduce((best, p) => (stats[p.id].wins > stats[best].wins ? p.id : best), PLAYERS[0].id);
-  if (stats[leaderId].wins === 0) return;
-  const leaderDeck = mostPlayedDeck(stats[leaderId], deckById);
-  if (!leaderDeck) return;
-  const art = leaderDeck.artUrls?.[0] || (await fetchCommanderArt(leaderDeck.commander))[0];
-  if (art) setHeroArt(art);
 }
 
 async function init() {
@@ -169,7 +155,6 @@ async function init() {
   renderStandings(stats, deckById);
   renderLedger(games, deckById);
   renderTopDecks(decks, stats);
-  setLeaderHeroArt(stats, deckById);
 
   if (games[0]) {
     const winner = playerById[games[0].winnerPlayerId];
