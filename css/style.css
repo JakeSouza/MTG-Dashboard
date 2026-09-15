@@ -210,3 +210,41 @@ button.secondary{background:transparent;border:1px solid var(--border);color:var
 .status.error{color:var(--danger);}
 .status.success{color:var(--success);}
 .hint{font-size:12px;color:var(--text-muted);margin-top:6px;}
+
+/* Mobile */
+@media (max-width:640px){
+  body{padding:28px 20px 60px;}
+
+  .top{padding-bottom:18px;margin-bottom:28px;gap:12px;}
+  h1{font-size:24px;}
+  .wordmark{font-size:34px;}
+  nav{gap:16px;font-size:13px;}
+
+  .champion{
+    flex-direction:column;align-items:flex-start;gap:16px;
+    padding:22px 20px;
+  }
+  .champion .stat{text-align:left;}
+  .champion .wins{font-size:36px;}
+
+  .runner-ups{grid-template-columns:1fr 1fr;}
+
+  .row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-areas:"date winner" "pods pods";
+    gap:6px 12px;
+    padding:12px 0;
+  }
+  .row .date{grid-area:date;}
+  .row .winner-tag{grid-area:winner;}
+  .row .pods{grid-area:pods;}
+
+  .deckcard{flex-wrap:wrap;}
+  .deckcard .edit-btn{width:100%;margin-left:0;margin-top:6px;}
+
+  form{padding:20px;max-width:100%;}
+  .pod-grid{grid-template-columns:1fr;gap:12px;}
+
+  #last-game{text-align:left !important;}
+}
